@@ -363,7 +363,7 @@ app.get('*.js', (req, res, next) => {
 
 // Start your app.
 
-app.listen(process.env.PORT || '3000', host, async (err) => {
+app.listen(process.env.PORT || '3001', host, async (err) => {
   if (err) {
     return logger.error(err.message)
   }
