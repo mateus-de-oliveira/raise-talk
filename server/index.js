@@ -362,8 +362,9 @@ app.get('*.js', (req, res, next) => {
 })
 
 // Start your app.
+console.log(process.env.PORT)
 
-app.listen(process.env.PORT || '3001', host, async (err) => {
+app.listen(process.env.PORT || '3000', host, async (err) => {
   if (err) {
     return logger.error(err.message)
   }
@@ -376,8 +377,8 @@ app.listen(process.env.PORT || '3001', host, async (err) => {
     } catch (e) {
       return logger.error(e)
     }
-    logger.appStarted(port, prettyHost, url)
+    logger.appStarted(process.env.PORT || '3000', prettyHost, url)
   } else {
-    logger.appStarted(port, prettyHost)
+    logger.appStarted(process.env.PORT || '3000', prettyHost)
   }
 })
