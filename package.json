@@ -5,6 +5,10 @@
   "private": true,
   "author": "Dandelion Pro Team",
   "license": "Envato Regular License",
+  "engines": {
+    "node": "14.17.0",
+    "npm": "8.0.0"
+  },
   "scripts": {
     "analyze:clean": "rimraf stats.json",
     "preanalyze": "npm run analyze:clean",
