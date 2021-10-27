@@ -44,10 +44,6 @@ export const PropertieProvider = ({ children }) => {
   const handleNotificationClose = () => setNotificationOpen(false)
 
   useEffect(() => {
-    console.log(viewport)
-  }, [viewport])
-
-  useEffect(() => {
     axios
       .get('/api/properties', { params: { user_id: userId } })
       .then(function(response) {
@@ -81,7 +77,6 @@ export const PropertieProvider = ({ children }) => {
         loadingCrudEdit,
         userId,
         viewport,
-
         setViewport,
         setUserId,
         setLoadingCrudEdit,

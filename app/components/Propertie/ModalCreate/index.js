@@ -69,7 +69,6 @@ export default function ModalCreate() {
           },
         })
         .then(async (result) => {
-          console.log(files)
           files.map(async (file) => {
             const fileRef = ref(
               storage,

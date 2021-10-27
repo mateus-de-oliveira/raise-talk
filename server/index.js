@@ -362,7 +362,6 @@ app.get('*.js', (req, res, next) => {
 })
 
 // Start your app.
-console.log(process.env.PORT)
 
 app.listen(process.env.PORT || '3000', host, async (err) => {
   if (err) {

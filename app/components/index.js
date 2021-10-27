@@ -31,3 +31,4 @@ export LocationMap from './LocationMap'
 
 export { PropertieProvider } from './Propertie/Context'
 export { CustomerProvider } from './Customer/Context'
+export Rating from './Rating/Rating'
