@@ -27,6 +27,7 @@ export Customer from './Customer'
 export MaterialDropZone from './Forms/MaterialDropZone'
 
 export FileInput from './FileInput'
+export LocationMap from './LocationMap'
 
 export { PropertieProvider } from './Propertie/Context'
 export { CustomerProvider } from './Customer/Context'

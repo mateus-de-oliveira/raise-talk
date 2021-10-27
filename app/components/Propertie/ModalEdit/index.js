@@ -17,6 +17,7 @@ import Switch from '@material-ui/core/Switch'
 import Button from '@material-ui/core/Button'
 import { usePropertieContext } from '../Context'
 import { MaterialDropZone } from 'dan-components'
+import { LocationMap } from 'dan-components'
 import { FileInput } from 'dan-components'
 import grey from '@material-ui/core/colors/grey'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -27,7 +28,6 @@ const storage = getStorage(firebaseApp)
 
 export default function ModalCreate() {
   const {
-    data,
     files,
     properties,
     tablePricing,
@@ -45,15 +45,26 @@ export default function ModalCreate() {
     setMessageNotification,
     setModalEditOpen,
     handleModalEditClose,
+    viewport,
   } = usePropertieContext()
 
   const formik = useFormik({
     initialValues: propertieSelected,
     enableReinitialize: true,
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values) => {
       setLoadingCrudEdit(true)
       axios
-        .put('/api/properties', { ...values, path_images: [] })
+        .put('/api/properties', {
+          ...values,
+          path_images: [],
+          location: {
+            latitude: viewport.latitude,
+            longitude: viewport.longitude,
+            with: viewport.width,
+            height: viewport.height,
+            zoom: viewport.zoom,
+          },
+        })
         .then(async (result) => {
           files.map(async (file) => {
             if (typeof file == 'object') {
@@ -177,31 +188,38 @@ export default function ModalCreate() {
               To subscribe to this website, please enter your email address
               here. We will send updates occasionally.
             </DialogContentText>
-            <TextField
-              autoFocus
-              margin='dense'
-              id='name'
-              name='title'
-              value={formik.values.title}
-              onChange={formik.handleChange}
-              label='Nome'
-              type='text'
-              fullWidth
-              required
-            />
-            <TextField
-              id='description'
-              name='description'
-              value={formik.values.description}
-              onChange={formik.handleChange}
-              label='Descrição'
-              multiline
-              rows='4'
-              margin='normal'
-              variant='outlined'
-              fullWidth
-            />
-            <FormGroup>
+            <FormGroup style={{ marginBottom: 10 }}>
+              <div style={{ marginBottom: -16 }}>Nome (Obrigatório)</div>
+              <TextField
+                autoFocus
+                margin='dense'
+                id='name'
+                name='title'
+                value={formik.values.title}
+                onChange={formik.handleChange}
+                label='Nome'
+                type='text'
+                fullWidth
+                required
+              />
+            </FormGroup>
+            <FormGroup style={{ marginBottom: 10 }}>
+              <div style={{ marginBottom: -16 }}>Descrição</div>
+              <TextField
+                id='description'
+                name='description'
+                value={formik.values.description}
+                onChange={formik.handleChange}
+                label='Descrição'
+                multiline
+                rows='4'
+                margin='normal'
+                variant='outlined'
+                fullWidth
+              />
+            </FormGroup>
+            <FormGroup style={{ marginBottom: 10 }}>
+              <div>Fotos do imóvel</div>
               <FormControlLabel
                 control={<Switch defaultChecked={propertieSelected.active} />}
                 label='Ativar imóvel?'
@@ -209,27 +227,38 @@ export default function ModalCreate() {
                 value={formik.values.active}
                 onChange={formik.handleChange}
               />
+
+              <MaterialDropZone
+                acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
+                files={files}
+                showPreviews
+                maxSize={5000000}
+                filesLimit={5}
+                text='Arraste e solte as imagens do imóvel aqui ou clique'
+              />
             </FormGroup>
-            <MaterialDropZone
-              acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
-              files={files}
-              showPreviews
-              maxSize={5000000}
-              filesLimit={5}
-              text='Drag and drop image(s) here or click'
-            />
-            <FileInput
-              label='Tabela de preço'
-              error={{ message: 'Error' }}
-              setAttachment={setTablePricing}
-              attachment={tablePricing}
-            />
-            <FileInput
-              label='Disponibilidade'
-              error={{ message: 'Error' }}
-              setAttachment={setAvailability}
-              attachment={availability}
-            />
+            <FormGroup style={{ marginBottom: 20 }}>
+              <div>Localização</div>
+              <LocationMap edit={true} />
+            </FormGroup>
+            <FormGroup>
+              <div style={{ marginBottom: -20 }}>Tabela de preço</div>
+              <FileInput
+                label='Tabela de preço'
+                error={{ message: 'Error' }}
+                setAttachment={setTablePricing}
+                attachment={tablePricing}
+              />
+            </FormGroup>
+            <FormGroup style={{ marginBottom: 10 }}>
+              <div style={{ marginBottom: -20 }}>Disponibilidade</div>
+              <FileInput
+                label='Disponibilidade'
+                error={{ message: 'Error' }}
+                setAttachment={setAvailability}
+                attachment={availability}
+              />
+            </FormGroup>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleModalEditClose} color='primary'>

@@ -52,6 +52,7 @@ function Propertie(props) {
     setAvailability,
     availability,
     setFiles,
+    setViewport,
     setData,
   } = usePropertieContext()
 
@@ -119,6 +120,8 @@ function Propertie(props) {
                     setPropertieSelected(result.data)
                     setFiles(result.data.path_images)
                     setTablePricing(result.data.table_pricing)
+                    setViewport(result.data.location)
+
                     setAvailability(result.data.availability)
                     handleModalEditOpen()
                   })

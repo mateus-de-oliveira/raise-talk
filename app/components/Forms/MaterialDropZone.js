@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import Dropzone from 'react-dropzone'
+import React, { useEffect, useCallback, useMemo } from 'react'
+import { useDropzone } from 'react-dropzone'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
+
 import { withStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import FileIcon from '@material-ui/icons/Description'
+
 import ActionDelete from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
-import Snackbar from '@material-ui/core/Snackbar'
+
 import CloudUpload from '@material-ui/icons/CloudUpload'
 import 'dan-styles/vendors/react-dropzone/react-dropzone.css'
-import isImage from './helpers/helpers.js'
+
 import { usePropertieContext } from '../Propertie/Context'
 
 const styles = (theme) => ({
@@ -40,51 +39,96 @@ const styles = (theme) => ({
   },
 })
 
+const thumbsContainer = {
+  display: 'flex',
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  marginTop: 16,
+}
+
+const thumb = {
+  display: 'inline-flex',
+  borderRadius: 2,
+  border: '1px solid #eaeaea',
+  marginBottom: 8,
+  marginRight: 8,
+  width: 100,
+  height: 100,
+  padding: 4,
+  boxSizing: 'border-box',
+}
+
+const thumbInner = {
+  display: 'flex',
+  minWidth: 0,
+  overflow: 'hidden',
+}
+
+const img = {
+  display: 'block',
+  width: 'auto',
+  height: '100%',
+}
+
+const baseStyle = {
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: '20px',
+  borderWidth: 2,
+  borderRadius: 2,
+  borderColor: '#eeeeee',
+  borderStyle: 'dashed',
+  backgroundColor: '#fafafa',
+  color: '#bdbdbd',
+  outline: 'none',
+  transition: 'border .24s ease-in-out',
+}
+
+const activeStyle = {
+  borderColor: '#2196f3',
+}
+
+const acceptStyle = {
+  borderColor: '#00e676',
+}
+
+const rejectStyle = {
+  borderColor: '#ff1744',
+}
+
 function MaterialDropZone(props) {
-  const [openSnackBar, setOpenSnackbar] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-
-  const [acceptedFiles] = useState(props.acceptedFiles) // eslint-disable-line
-
+  const { classes, text } = props
   const { files, setFiles } = usePropertieContext()
-
-  useEffect(() => {
-    setFiles(props.files)
-  }, [])
-
   const {
-    classes,
-    showPreviews,
-    maxSize,
-    text,
-    showButton,
-    filesLimit,
-    ...rest
-  } = props
-
-  const onDrop = useCallback(
-    (filesVal) => {
-      let oldFiles = files
-      const filesLimitVal = filesLimit || '3'
-      oldFiles = oldFiles.concat(filesVal)
-      if (oldFiles.length > filesLimit) {
-        setOpenSnackbar(true)
-        setErrorMessage(`Cannot upload more than ${filesLimitVal} items.`)
-      } else {
-        setFiles(oldFiles)
-      }
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    isDragAccept,
+    isDragReject,
+  } = useDropzone({
+    accept: 'image/*',
+    onDrop: (acceptedFiles) => {
+      setFiles(
+        acceptedFiles.map((file) =>
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        )
+      )
     },
-    [files, filesLimit]
+  })
+
+  const style = useMemo(
+    () => ({
+      ...baseStyle,
+      ...(isDragActive ? activeStyle : {}),
+      ...(isDragAccept ? acceptStyle : {}),
+      ...(isDragReject ? rejectStyle : {}),
+    }),
+    [isDragActive, isDragReject, isDragAccept]
   )
-
-  const onDropRejected = () => {
-    setOpenSnackbar(true)
-    setErrorMessage('File too big, max size is 3MB')
-  }
-
-  const handleRequestCloseSnackBar = () => {
-    setOpenSnackbar(false)
-  }
 
   const handleRemove = useCallback(
     (file, fileIndex) => {
@@ -100,119 +144,54 @@ function MaterialDropZone(props) {
     [files]
   )
 
-  const fileSizeLimit = maxSize || 3000000
-  const DeleteBtn = ({ file, index }) => (
-    <div className='middle'>
-      <IconButton onClick={() => handleRemove(file, index)}>
-        <ActionDelete className='removeBtn' />
-      </IconButton>
-    </div>
+  const thumbs = files.map((file, index) =>
+    typeof file == 'string' ? (
+      <div style={thumb} key={file}>
+        <IconButton
+          style={{ position: 'absolute' }}
+          onClick={() => handleRemove(file, index)}
+        >
+          <ActionDelete className='removeBtn' />
+        </IconButton>
+        <div style={thumbInner}>
+          <img src={file} style={img} />
+        </div>
+      </div>
+    ) : (
+      <div style={thumb} key={file.name}>
+        <IconButton
+          style={{ position: 'absolute' }}
+          onClick={() => handleRemove(file, index)}
+        >
+          <ActionDelete className='removeBtn' />
+        </IconButton>
+        <div style={thumbInner}>
+          <img src={file.preview} style={img} />
+        </div>
+      </div>
+    )
   )
 
-  const Previews = ({ filesArray }) =>
-    filesArray.map((file, index) => {
-      if (typeof file != 'string') {
-        const base64Img = URL.createObjectURL(file)
-        if (isImage(file)) {
-          return (
-            <div key={index.toString()}>
-              <div className='imageContainer col fileIconImg'>
-                <figure className='imgWrap'>
-                  <img
-                    className='smallPreviewImg'
-                    src={base64Img}
-                    alt='preview'
-                  />
-                </figure>
-                <DeleteBtn file={file} index={index} />
-              </div>
-            </div>
-          )
-        }
-      } else {
-        return (
-          <div key={index.toString()}>
-            <div className='imageContainer col fileIconImg'>
-              <figure className='imgWrap'>
-                <img className='smallPreviewImg' src={file} alt='preview' />
-              </figure>
-              <DeleteBtn file={file} index={index} />
-            </div>
-          </div>
-        )
-      }
+  useEffect(
+    () => () => {
+      // Make sure to revoke the data uris to avoid memory leaks
+      files.forEach((file) => URL.revokeObjectURL(file.preview))
+    },
+    [files]
+  )
 
-      return (
-        <div key={index.toString()}>
-          <div className='imageContainer col fileIconImg'>
-            <FileIcon className='smallPreviewImg' alt='preview' />
-            <DeleteBtn file={file} index={index} />
-          </div>
-        </div>
-      )
-    })
-
-  Previews.propTypes = {
-    filesArray: PropTypes.array.isRequired,
-  }
-
-  let dropzoneRef
   return (
-    <div>
-      <Dropzone
-        accept={acceptedFiles.join(',')}
-        onDrop={onDrop}
-        onDropRejected={onDropRejected}
-        acceptClassName='stripes'
-        rejectClassName='rejectStripes'
-        maxSize={fileSizeLimit}
-        ref={(node) => {
-          dropzoneRef = node
-        }}
-        {...rest}
-      >
-        {({ getRootProps, getInputProps }) => (
-          <div
-            {...getRootProps()}
-            className={classNames(classes.dropItem, 'dropZone')}
-          >
-            <div className='dropzoneTextStyle'>
-              <input {...getInputProps()} />
-              <p className='dropzoneParagraph'>{text}</p>
-              <div className={classes.uploadIconSize}>
-                <CloudUpload />
-              </div>
-            </div>
-          </div>
-        )}
-        {/* end */}
-      </Dropzone>
-      {showButton && (
-        <Button
-          className={classes.button}
-          fullWidth
-          variant='contained'
-          onClick={() => {
-            dropzoneRef.open()
-          }}
-          color='secondary'
-        >
-          Click to upload file(s)
-          <span className={classes.rightIcon}>
-            <CloudUpload />
-          </span>
-        </Button>
-      )}
-      <div className='row preview'>
-        {showPreviews && <Previews filesArray={files} />}
+    <section className='container'>
+      <div {...getRootProps({ style })}>
+        <input {...getInputProps()} />
+        <p className='dropzoneParagraph'>{text}</p>
+        <div className={classes.uploadIconSize}>
+          <CloudUpload />
+        </div>
       </div>
-      <Snackbar
-        open={openSnackBar}
-        message={errorMessage}
-        autoHideDuration={4000}
-        onClose={handleRequestCloseSnackBar}
-      />
-    </div>
+
+      <aside style={thumbsContainer}>{thumbs}</aside>
+    </section>
   )
 }
 

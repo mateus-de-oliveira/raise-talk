@@ -4,7 +4,6 @@ import { useFormik } from 'formik'
 import firebaseApp from '../../../config/database'
 import { getFirestore, updateDoc, doc, arrayUnion } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { isEmpty } from 'lodash/fp'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Box from '@material-ui/core/Box'
 import FormGroup from '@material-ui/core/FormGroup'
@@ -12,13 +11,13 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import TextField from '@material-ui/core/TextField'
 import Switch from '@material-ui/core/Switch'
 import Button from '@material-ui/core/Button'
 import { usePropertieContext } from '../Context'
 import { MaterialDropZone } from 'dan-components'
+import { LocationMap } from 'dan-components'
 import grey from '@material-ui/core/colors/grey'
 import { useAuth0 } from '@auth0/auth0-react'
 
@@ -46,6 +45,7 @@ export default function ModalCreate() {
     setMessageNotification,
     setModalCreateOpen,
     handleModalCreateClose,
+    viewport,
   } = usePropertieContext()
   const { user } = useAuth0()
 
@@ -60,8 +60,16 @@ export default function ModalCreate() {
           ...values,
           path_images: [],
           user_id: user.sub.split('|')[1],
+          location: {
+            latitude: viewport.latitude,
+            longitude: viewport.longitude,
+            with: viewport.width,
+            height: viewport.height,
+            zoom: viewport.zoom,
+          },
         })
         .then(async (result) => {
+          console.log(files)
           files.map(async (file) => {
             const fileRef = ref(
               storage,
@@ -162,33 +170,38 @@ export default function ModalCreate() {
         <DialogTitle id='form-dialog-title'>Cadastrar imóvel</DialogTitle>
         <form onSubmit={formik.handleSubmit}>
           <DialogContent>
-            <DialogContentText>
+            {/* <DialogContentText>
               To subscribe to this website, please enter your email address
               here. We will send updates occasionally.
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin='dense'
-              id='name'
-              name='title'
-              onChange={formik.handleChange}
-              label='Nome'
-              type='text'
-              required
-              fullWidth
-            />
-            <TextField
-              id='description'
-              name='description'
-              onChange={formik.handleChange}
-              label='Descrição'
-              multiline
-              rows='4'
-              margin='normal'
-              variant='outlined'
-              fullWidth
-            />
-            <FormGroup>
+            </DialogContentText> */}
+            <FormGroup style={{ marginBottom: 10 }}>
+              <div style={{ marginBottom: -16 }}>Nome (Obrigatório)</div>
+              <TextField
+                margin='dense'
+                id='name'
+                name='title'
+                onChange={formik.handleChange}
+                label='Nome'
+                type='text'
+                required
+                fullWidth
+              />
+            </FormGroup>
+            <FormGroup style={{ marginBottom: 10 }}>
+              <div style={{ marginBottom: -16 }}>Descrição</div>
+              <TextField
+                id='description'
+                name='description'
+                onChange={formik.handleChange}
+                label='Digite uma breve descrição'
+                multiline
+                rows='4'
+                margin='normal'
+                variant='outlined'
+                fullWidth
+              />
+            </FormGroup>
+            <FormGroup style={{ marginBottom: 10 }}>
               <FormControlLabel
                 control={<Switch defaultChecked />}
                 label='Ativar imóvel?'
@@ -196,26 +209,39 @@ export default function ModalCreate() {
                 onChange={formik.handleChange}
               />
             </FormGroup>
-            <MaterialDropZone
-              acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
-              files={files}
-              showPreviews
-              maxSize={5000000}
-              filesLimit={5}
-              text='Drag and drop image(s) here or click'
-            />
-            <FileInput
-              label='Tabela de preço'
-              error={{ message: 'Error' }}
-              setAttachment={setTablePricing}
-              attachment={tablePricing}
-            />
-            <FileInput
-              label='Disponibilidade'
-              error={{ message: 'Error' }}
-              setAttachment={setAvailability}
-              attachment={availability}
-            />
+            <FormGroup style={{ marginBottom: 10 }}>
+              <div>Fotos do imóvel</div>
+              <MaterialDropZone
+                acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
+                files={files}
+                showPreviews
+                maxSize={5000000}
+                filesLimit={5}
+                text='Arraste e solte as imagens do imóvel aqui ou clique'
+              />
+            </FormGroup>
+            <FormGroup style={{ marginBottom: 20 }}>
+              <div>Localização</div>
+              <LocationMap />
+            </FormGroup>
+            <FormGroup>
+              <div style={{ marginBottom: -20 }}>Tabela de preço</div>
+              <FileInput
+                label='Clique aqui para enviar'
+                error={{ message: 'Error' }}
+                setAttachment={setTablePricing}
+                attachment={tablePricing}
+              />
+            </FormGroup>
+            <FormGroup style={{ marginBottom: 10 }}>
+              <div style={{ marginBottom: -20 }}>Disponibilidade</div>
+              <FileInput
+                label='Clique aqui para enviar'
+                error={{ message: 'Error' }}
+                setAttachment={setAvailability}
+                attachment={availability}
+              />
+            </FormGroup>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleModalCreateClose} color='primary'>

@@ -20,6 +20,13 @@ export const PropertieProvider = ({ children }) => {
   const [propertieSelected, setPropertieSelected] = useState('')
   const [loadingCrud, setLoadingCrud] = useState(false)
   const [loadingCrudEdit, setLoadingCrudEdit] = useState(false)
+  const [viewport, setViewport] = useState({
+    latitude: -3.7933031,
+    longitude: -38.6597021,
+    width: 425.328125,
+    height: 200,
+    zoom: 8,
+  })
 
   const handleModalCreateOpen = () => setModalCreateOpen(true)
   const handleModalCreateClose = () => setModalCreateOpen(false)
@@ -35,6 +42,10 @@ export const PropertieProvider = ({ children }) => {
 
   const handleNotificationOpen = () => setNotificationOpen(true)
   const handleNotificationClose = () => setNotificationOpen(false)
+
+  useEffect(() => {
+    console.log(viewport)
+  }, [viewport])
 
   useEffect(() => {
     axios
@@ -69,6 +80,9 @@ export const PropertieProvider = ({ children }) => {
         loadingCrud,
         loadingCrudEdit,
         userId,
+        viewport,
+
+        setViewport,
         setUserId,
         setLoadingCrudEdit,
         setLoadingCrud,
