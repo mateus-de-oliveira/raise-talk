@@ -58,7 +58,7 @@ function Propertie(props) {
 
   const columns = [
     {
-      name: 'Name',
+      name: 'Nome',
       options: {
         filter: true,
       },

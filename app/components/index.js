@@ -1,6 +1,6 @@
 // Main Components
 export Header from './Header/Header'
-export CounterTrading from './Counter/CounterTrading'
+
 export HeaderMenu from './Header/HeaderMenu'
 export Sidebar from './Sidebar'
 export SidebarBig from './SidebarBig'

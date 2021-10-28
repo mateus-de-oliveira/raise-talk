@@ -184,10 +184,10 @@ export default function ModalCreate() {
         <DialogTitle id='form-dialog-title'>Atualizar imóvel</DialogTitle>
         <form onSubmit={formik.handleSubmit}>
           <DialogContent>
-            <DialogContentText>
+            {/* <DialogContentText>
               To subscribe to this website, please enter your email address
               here. We will send updates occasionally.
-            </DialogContentText>
+            </DialogContentText> */}
             <FormGroup style={{ marginBottom: 10 }}>
               <div style={{ marginBottom: -16 }}>Nome (Obrigatório)</div>
               <TextField
