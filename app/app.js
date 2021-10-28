@@ -6,23 +6,23 @@
  */
 
 // Needed for redux-saga es6 generator support
-import '@babel/polyfill'
+import '@babel/polyfill';
 
 // Import all the third party stuff
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import { Auth0Provider } from '@auth0/auth0-react'
-import { ConnectedRouter } from 'connected-react-router/immutable'
-import history from 'utils/history'
-import 'sanitize.css/sanitize.css'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { Auth0Provider } from '@auth0/auth0-react';
+import { ConnectedRouter } from 'connected-react-router/immutable';
+import history from 'utils/history';
+import 'sanitize.css/sanitize.css';
 // Import root app
-import App from 'containers/App'
-import { UserProvider } from 'containers/App/Context'
-import './styles/layout/base.scss'
+import App from 'containers/App';
+import { UserProvider } from 'containers/App/Context';
+import './styles/layout/base.scss';
 
 // Import Language Provider
-import LanguageProvider from 'containers/LanguageProvider'
+import LanguageProvider from 'containers/LanguageProvider';
 
 // Load the favicon and the .htaccess file
 // Load the favicon and the .htaccess file
@@ -31,23 +31,23 @@ import '!file-loader?name=[name].[ext]!../public/favicons/favicon.ico' // eslint
 import 'file-loader?name=.htaccess!./.htaccess' // eslint-disable-line
 /* eslint-enable import/no-unresolved, import/extensions */
 
-import configureStore from './redux/configureStore'
+import { PropertieProvider, CustomerProvider } from 'dan-components';
+import configureStore from './redux/configureStore';
 
 // Import i18n messages
-import { translationMessages } from './i18n'
+import { translationMessages } from './i18n';
 
-import { PropertieProvider, CustomerProvider } from 'dan-components'
 
 // Create redux store with history
-const initialState = {}
-const store = configureStore(initialState, history)
-const MOUNT_NODE = document.getElementById('app')
+const initialState = {};
+const store = configureStore(initialState, history);
+const MOUNT_NODE = document.getElementById('app');
 
 const render = (messages) => {
   ReactDOM.render(
     <Auth0Provider
-      domain='whats-imob.us.auth0.com'
-      clientId='7B6IYuO5kXBZHACoBKKgblJ9xwNmCDt3'
+      domain="raisetalk.us.auth0.com"
+      clientId="p0T2NGIDnqVwsBosM0N9TDuSQberxhvT"
       redirectUri={window.location.origin + '/dashboard'}
     >
       <Provider store={store}>
@@ -65,31 +65,31 @@ const render = (messages) => {
       </Provider>
     </Auth0Provider>,
     MOUNT_NODE
-  )
-}
+  );
+};
 
 if (module.hot) {
   // Hot reloadable React components and translation json files
   // modules.hot.accept does not accept dynamic dependencies,
   // have to be constants at compile-time
   module.hot.accept(['./i18n', 'containers/App'], () => {
-    ReactDOM.unmountComponentAtNode(MOUNT_NODE)
-    render(translationMessages)
-  })
+    ReactDOM.unmountComponentAtNode(MOUNT_NODE);
+    render(translationMessages);
+  });
 }
 
 // Chunked polyfill for browsers without Intl support
 if (!window.Intl) {
   new Promise((resolve) => {
-    resolve(import('intl'))
+    resolve(import('intl'));
   })
     .then(() => Promise.all([import('intl/locale-data/jsonp/en.js')]))
     .then(() => render(translationMessages))
     .catch((err) => {
-      throw err
-    })
+      throw err;
+    });
 } else {
-  render(translationMessages)
+  render(translationMessages);
 }
 
 // Install ServiceWorker and AppCache in the end since
