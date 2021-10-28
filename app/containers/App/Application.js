@@ -8,6 +8,7 @@ import {
   Parent,
   DashboardPage,
   BlankPage,
+  Propertie,
   Form,
   Table,
   Error,
@@ -16,7 +17,7 @@ import {
   Customer,
   Login,
 } from '../pageListAsync'
-import BasicTable from '../Pages/Table/BasicTable'
+
 import Outer from '../Templates/Outer'
 import { useAuth0 } from '@auth0/auth0-react'
 import { usePropertieContext } from '../../components/Propertie/Context'
@@ -51,7 +52,7 @@ function Application(props) {
     <Dashboard history={history} changeMode={changeMode}>
       <Switch>
         <Route exact path='/dashboard' component={BlankPage} />
-        <Route path='/dashboard/imoveis' component={BasicTable} />
+        <Route path='/dashboard/imoveis' component={Propertie} />
         <Route path='/dashboard/clientes' component={Customer} />
 
         {/* <Route path="/app/dashboard" component={DashboardPage} />

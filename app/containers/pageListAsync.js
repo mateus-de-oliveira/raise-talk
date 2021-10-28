@@ -16,6 +16,10 @@ export const Customer = loadable(() => import('./Pages/Customer'), {
   fallback: <Loading />,
 })
 
+export const Propertie = loadable(() => import('./Pages/Propertie'), {
+  fallback: <Loading />,
+})
+
 export const DashboardPage = loadable(() => import('./Pages/Dashboard'), {
   fallback: <Loading />,
 })

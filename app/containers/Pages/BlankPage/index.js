@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Helmet } from 'react-helmet'
 import brand from 'dan-api/dummy/brand'
-import { PapperBlock } from 'dan-components'
+import { PapperBlock, LocationMap } from 'dan-components'
 import Funnel, {
   Title,
   Margin,
   Export,
-  Tooltip,
   Item,
   Border,
   Label,
-  AdaptiveLayout,
-  Legend,
 } from 'devextreme-react/funnel'
 import { usePropertieContext } from '../../../components/Propertie/Context'
+import Grid from '@material-ui/core/Grid'
+import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
 
 function formatLabel(arg) {
   return `<span class="label">${arg.valueText}</span><br/>${arg.item.argument}`
@@ -26,6 +26,7 @@ function BlankPage() {
   const { userId } = usePropertieContext()
 
   const [customers, setCustomers] = useState()
+  const [regions, setRegions] = useState([])
 
   useEffect(() => {
     axios
@@ -71,6 +72,16 @@ function BlankPage() {
 
         setCustomers(result)
       })
+
+    axios
+      .get('/api/properties', { params: { user_id: userId } })
+      .then((result) => {
+        const data = result.data.map((propertie) => {
+          return { ...propertie.location, name: propertie.title }
+        })
+
+        setRegions(data)
+      })
   }, [])
 
   return (
@@ -83,32 +94,82 @@ function BlankPage() {
         <meta property='twitter:title' content={title} />
         <meta property='twitter:description' content={description} />
       </Helmet>
-      <PapperBlock title='Dashboard' desc='Some text description'>
-        <Funnel
-          id='funnel'
-          dataSource={customers}
-          palette='Material'
-          argumentField='argument'
-          valueField='value'
-          sortData={false}
-        >
-          <Legend visible={true} />
+      <PapperBlock title='Relatórios' desc='' whiteBg icon='ion-ios-podium'>
+        <Grid container spacing={2}>
+          <Grid item sm={3} xs={12}>
+            <Paper style={{ padding: 10 }}>
+              <Funnel
+                id='funnel'
+                dataSource={customers}
+                palette='Material'
+                argumentField='argument'
+                valueField='value'
+                sortData={false}
+              >
+                <Title text='Conversão de clientes'>
+                  <Margin bottom={30} />
+                </Title>
+                <Export enabled={false} />
+                {/* <Tooltip enabled={true} format='fixedPoint' /> */}
+                <Item>
+                  <Border visible={false} />
+                </Item>
+                <Label
+                  visible={true}
+                  position='inside'
+                  backgroundColor='none'
+                  customizeText={formatLabel}
+                />
+              </Funnel>
+            </Paper>
+          </Grid>
+          <Grid item sm={9} xs={12}>
+            <Paper style={{ padding: 10 }}>
+              <Typography
+                align='center'
+                variant='subtitle1'
+                style={{
+                  fontSize: 28,
+                  marginBottom: 22.2,
+                  color: 'rgb(35, 35, 35)',
+                  fontFamily:
+                    '"Segoe UI Light", "Helvetica Neue Light", "Segoe UI", "Helvetica Neue", "Trebuchet MS", Verdana, sans-serif',
+                }}
+              >
+                Regiões dos imóveis
+              </Typography>
 
-          <Title text='Conversão de clientes'>
-            <Margin bottom={30} />
-          </Title>
-          <Export enabled={true} />
-          <Tooltip enabled={true} format='fixedPoint' />
-          <Item>
-            <Border visible={false} />
-          </Item>
-          <Label
-            visible={true}
-            position='inside'
-            backgroundColor='none'
-            customizeText={formatLabel}
-          />
-        </Funnel>
+              <LocationMap viewRegions={true} regions={regions} />
+            </Paper>
+          </Grid>
+          <Grid item sm={12} xs={12}>
+            <Paper style={{ padding: 10 }}>
+              <Funnel
+                id='funnel'
+                dataSource={customers}
+                palette='Material'
+                argumentField='argument'
+                valueField='value'
+                sortData={false}
+              >
+                <Title text='Conversão de clientes'>
+                  <Margin bottom={30} />
+                </Title>
+                <Export enabled={false} />
+                {/* <Tooltip enabled={true} format='fixedPoint' /> */}
+                <Item>
+                  <Border visible={false} />
+                </Item>
+                <Label
+                  visible={true}
+                  position='inside'
+                  backgroundColor='none'
+                  customizeText={formatLabel}
+                />
+              </Funnel>
+            </Paper>
+          </Grid>
+        </Grid>
       </PapperBlock>
     </div>
   )
