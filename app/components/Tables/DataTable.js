@@ -8,6 +8,7 @@ import Switch from '@material-ui/core/Switch'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import { useFormik, Field } from 'formik'
+import Loading from 'dan-components/Loading'
 
 import Chip from '@material-ui/core/Chip'
 import MUIDataTable from 'mui-datatables'
@@ -184,10 +185,7 @@ function AdvFilter(props) {
   const { classes } = props
 
   return loading ? (
-    <CircularProgress
-      style={{ display: 'block', margin: '0 auto' }}
-      color='secondary'
-    />
+    <Loading />
   ) : (
     <React.Fragment>
       <Dialog

@@ -10,6 +10,7 @@ import {
 import { IconButton, Icon, InputAdornment } from '@material-ui/core'
 import MomentUtils from '@date-io/moment'
 import ClearIcon from '@material-ui/icons/Clear'
+import Loading from 'dan-components/Loading'
 
 import DateFnsUtils from '@date-io/date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -106,15 +107,7 @@ export default function ModalCreate() {
         opacity: '0.8',
       }}
     >
-      <CircularProgress
-        style={{
-          position: 'relative',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          color: grey[50],
-        }}
-      />
+      <Loading />
     </Box>
   ) : (
     <Fragment>

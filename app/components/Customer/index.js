@@ -14,6 +14,7 @@ import ModalCreate from './ModalCreate'
 import ModalEdit from './ModalEdit'
 import ModalDelete from './ModalDelete'
 import Notification from './Notification'
+import Loading from 'dan-components/Loading'
 
 const styles = (theme) => ({
   table: {
@@ -272,10 +273,7 @@ function Customer(props) {
   const { classes } = props
 
   return loading ? (
-    <CircularProgress
-      style={{ display: 'block', margin: '0 auto' }}
-      color='secondary'
-    />
+    <Loading />
   ) : (
     <Fragment>
       <Button

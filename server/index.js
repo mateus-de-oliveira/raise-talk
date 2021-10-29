@@ -79,7 +79,9 @@ app.get('/api/properties/:id', (req, res) => {
 
 app.post('/api/properties', async (req, res) => {
   const data = {
-    created_at: new Date().toLocaleString(),
+    created_at: new Date().toLocaleString('pt-BR', {
+      timeZone: 'America/Sao_Paulo',
+    }),
     updated_at: 'Nunca foi atualizado',
     ...req.body,
   }
@@ -110,7 +112,9 @@ app.put('/api/properties', (req, res) => {
     .doc(id)
     .update({
       ...req.body,
-      updated_at: new Date().toLocaleString(),
+      updated_at: new Date().toLocaleString('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+      }),
     })
     .then(async () => {
       const ref = await db
@@ -197,7 +201,9 @@ app.get('/api/customers/analytics', (req, res) => {
 
 app.post('/api/customers', async (req, res) => {
   const data = {
-    created_at: new Date().toLocaleString(),
+    created_at: new Date().toLocaleString('pt-BR', {
+      timeZone: 'America/Sao_Paulo',
+    }),
     updated_at: 'Nunca foi atualizado',
     ...req.body,
   }
@@ -229,7 +235,9 @@ app.put('/api/customers', (req, res) => {
     .doc(id)
     .update({
       ...req.body,
-      updated_at: new Date().toLocaleString(),
+      updated_at: new Date().toLocaleString('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+      }),
     })
     .then(async () => {
       const ref = await db
@@ -317,7 +325,9 @@ app.put('/api/users', (req, res) => {
     .doc(id)
     .update({
       ...req.body,
-      updated_at: new Date().toLocaleString(),
+      updated_at: new Date().toLocaleString('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+      }),
     })
     .then(() => {
       res.json({

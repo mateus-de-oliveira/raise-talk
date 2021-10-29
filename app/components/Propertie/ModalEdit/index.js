@@ -4,7 +4,7 @@ import { useFormik } from 'formik'
 import firebaseApp from '../../../config/database'
 import { getFirestore, updateDoc, doc, arrayUnion } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-
+import Loading from 'dan-components/Loading'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Dialog from '@material-ui/core/Dialog'
@@ -164,15 +164,7 @@ export default function ModalCreate() {
         opacity: '0.8',
       }}
     >
-      <CircularProgress
-        style={{
-          position: 'relative',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          color: grey[50],
-        }}
-      />
+      <Loading />
     </Box>
   ) : (
     <Fragment>

@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
-
+import Loading from 'dan-components/Loading'
 import { usePropertieContext } from './Context'
 import ModalCreate from './ModalCreate'
 import ModalEdit from './ModalEdit'
@@ -217,10 +217,7 @@ function Propertie(props) {
   const { classes } = props
 
   return loading ? (
-    <CircularProgress
-      style={{ display: 'block', margin: '0 auto' }}
-      color='secondary'
-    />
+    <Loading />
   ) : (
     <Fragment>
       <Button

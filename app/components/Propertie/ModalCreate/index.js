@@ -20,7 +20,7 @@ import { MaterialDropZone } from 'dan-components'
 import { LocationMap } from 'dan-components'
 import grey from '@material-ui/core/colors/grey'
 import { useAuth0 } from '@auth0/auth0-react'
-
+import Loading from 'dan-components/Loading'
 import { FileInput } from 'dan-components'
 
 const firestore = getFirestore(firebaseApp)
@@ -149,15 +149,7 @@ export default function ModalCreate() {
         opacity: '0.8',
       }}
     >
-      <CircularProgress
-        style={{
-          position: 'relative',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          color: grey[50],
-        }}
-      />
+      <Loading />
     </Box>
   ) : (
     <Fragment>

@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react'
 import axios from 'axios'
 import { useFormik } from 'formik'
 import FormControl from '@material-ui/core/FormControl'
+import Loading from 'dan-components/Loading'
 
 import {
   DateTimePicker,
@@ -114,15 +115,7 @@ export default function ModalCreate() {
         opacity: '0.8',
       }}
     >
-      <CircularProgress
-        style={{
-          position: 'relative',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          color: grey[50],
-        }}
-      />
+      <Loading />
     </Box>
   ) : (
     <Fragment>
